@@ -29,7 +29,7 @@ services:
       - INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE=eu868/gateway/{{ .GatewayID }}/command/#
     depends_on:
       - mosquitto
-  
+
   chirpstack-gateway-bridge-basicstation:
     image: chirpstack/chirpstack-gateway-bridge:4
     restart: unless-stopped
@@ -73,8 +73,32 @@ services:
     restart: unless-stopped
     ports:
       - "1883:1883"
-    volumes: 
+    volumes:
       - ./configuration/mosquitto/config/:/mosquitto/config/
+
+  thingsboard:
+    image: thingsboard/tb-postgres:latest
+    container_name: thingsboard
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+      - mosquitto
+    environment:
+      TB_QUEUE_TYPE: "redis"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/chirpstack"
+      SPRING_DATASOURCE_USERNAME: "chirpstack"
+      SPRING_DATASOURCE_PASSWORD: "chirpstack"
+      REDIS_URL: "redis://redis:6379"
+      TB_MQTT_ENABLE: "true"
+      TB_MQTT_HOST: "mosquitto"
+      TB_MQTT_PORT: "1883"
+      LOGGING_LEVEL_ROOT: DEBUG
+      LOGGING_LEVEL_ORG_THINGSBOARD: DEBUG
+    ports:
+      - "9090:9090"   # ThingsBoard Web UI
+    volumes:
+      - ~/my_chipstack/chirpstack-docker/data/thingsboard:/data
 
 volumes:
   postgresqldata:
