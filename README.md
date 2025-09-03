@@ -1,3 +1,54 @@
+# Personal notes for the installation of chirpstack and thingsboard docker
+## Update RPI installation
+sudo apt update && sudo apt upgrade -y
+
+
+## Docker-compose installation
+```bash
+$ sudo apt-get install docker-compose -y
+```
+## MQTT tools
+sudo apt-get install -y mosquitto-clients
+
+## Add thingsboard database
+**Note:** More elegant solutions, but this works
+
+ ```bash
+sudo docker-compose up -d postgres
+sudo docker exec -it chirpstack-tb-docker_postgres_1 psql -U chirpstack
+```
+
+Create user for Thingsboard
+ ```bash
+CREATE USER thingsboard WITH PASSWORD 'thingsboard';
+```
+
+Create database for Thingsboard
+```bash
+CREATE DATABASE thingsboard WITH OWNER thingsboard ENCODING 'UTF8';
+```
+
+Add Thingsboard user to own database
+```bash
+GRANT ALL PRIVILEGES ON DATABASE thingsboard TO thingsboard;
+\q
+```
+
+## Docker-compose bring up
+Use following command to install docker-compose
+
+```bash
+sudo docker-compose up
+```
+
+
+### Additional commands
+**Note:** May not be needed. Only for reference
+
+```bash
+sudo docker-compose down --volumes --rmi all --remove-orphans
+```
+
 # ChirpStack Docker example
 
 This repository contains a skeleton to setup the [ChirpStack](https://www.chirpstack.io)
@@ -97,3 +148,4 @@ You should be able to access the UI by opening http://localhost:8090 in your bro
 
 **Note:** It is recommended to use the [gRPC](https://www.chirpstack.io/docs/chirpstack/api/grpc.html)
 interface over the [REST](https://www.chirpstack.io/docs/chirpstack/api/rest.html) interface.
+
