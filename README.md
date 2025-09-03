@@ -38,7 +38,7 @@ GRANT ALL PRIVILEGES ON DATABASE thingsboard TO thingsboard;
 Use following command to install docker-compose
 
 ```bash
-sudo docker-compose up
+sudo docker-compose up -d
 ```
 
 
