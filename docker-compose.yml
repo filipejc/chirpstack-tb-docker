@@ -96,6 +96,7 @@ services:
       #INSTALL_TB: "true" # auto-install schema on first start
     ports:
       - "9090:9090" # ThingsBoard Web UI
+      - "1884:1883" # ThingsBoard MQTT
 
     volumes:
       - tb-data:/data # TB data (e.g., uploads)
